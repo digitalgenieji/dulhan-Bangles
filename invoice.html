@@ -1,0 +1,382 @@
+<!-- Save as: invoice_send_whatsapp_a5_theme.html -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Dulhan Bangles — Invoice (A5) & WhatsApp Send</title>
+
+<style>
+  :root{
+    --bg:#efe6da;
+    --dark:#24170f;      /* deep brown, matches logo */
+    --accent:#d6a94b;    /* warm gold */
+    --muted:#6b5e4a;
+    --shadow: 0 10px 30px rgba(0,0,0,0.08);
+    --mono: "Segoe UI", Roboto, Arial, sans-serif;
+  }
+  body{font-family:var(--mono);margin:16px;background:linear-gradient(180deg,#f9f7f2,#efe9dd);color:#222}
+  .app{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:420px 1fr;gap:18px;align-items:start}
+  .panel{background:#fff;padding:14px;border-radius:10px;box-shadow:var(--shadow);border:1px solid rgba(0,0,0,0.03)}
+  h2{margin:6px 0 12px 0;color:var(--dark)}
+  label{display:block;font-size:13px;color:var(--muted);margin-top:8px}
+  input[type="text"],input[type="number"],textarea{width:100%;padding:8px;border-radius:8px;border:1px solid #e7e2d9;margin-top:6px;font-size:14px}
+  .btn{background:var(--accent);color:#24180f;padding:9px 12px;border-radius:8px;border:none;cursor:pointer;font-weight:700}
+  .btn.ghost{background:transparent;border:1px solid rgba(0,0,0,0.06);color:var(--muted)}
+  .items-area{margin-top:12px;padding:10px;border-radius:8px;border:1px dashed rgba(0,0,0,0.04);background:linear-gradient(180deg,#fff,#fbfaf8)}
+  .small{font-size:12px;color:#7c6f5e}
+
+  /* A5 invoice preview styling — logo theme applied */
+  .invoice-preview{padding:18px;border-radius:8px;background:linear-gradient(180deg,#fff,#fcfbf8);border:1px solid #efe9e2}
+  .inv-header{display:flex;gap:14px;align-items:center}
+  .logo-img{width:72px;height:72px;border-radius:8px;object-fit:cover;border:2px solid rgba(214,169,75,0.12);background:linear-gradient(180deg,#281e15,#2f2419)}
+  .shop {font-weight:900;color:var(--dark);font-size:18px}
+  .shop-addr{font-size:12px;color:#666;margin-top:6px}
+  .inv-meta{margin-left:auto;text-align:right;font-size:13px;color:#444}
+  table{width:100%;border-collapse:collapse;margin-top:12px}
+  thead th{background:#2f2f2f;color:#fff;padding:10px 8px;font-size:13px;text-align:left}
+  tbody td{padding:10px 8px;border-bottom:1px solid #eee;font-size:13px}
+  .text-right{text-align:right}
+  .totals{display:flex;justify-content:flex-end;margin-top:10px}
+  .totals .box{min-width:220px;background:#fff;padding:10px;border-radius:6px;border:1px solid #eee}
+  .totals .row{display:flex;justify-content:space-between;padding:6px 0;color:#444}
+  .grand{font-weight:900;color:var(--accent);font-size:16px;border-top:1px solid #eee;padding-top:8px;margin-top:8px}
+  .controls{display:flex;gap:8px;justify-content:flex-end;margin-bottom:10px}
+
+  /* responsive */
+  @media (max-width:980px){ .app{grid-template-columns:1fr} .inv-meta{margin-left:0;text-align:left;margin-top:8px} }
+</style>
+</head>
+<body>
+  <div class="app">
+    <!-- Left: Invoice maker -->
+    <div class="panel">
+      <h2>Invoice Maker (A5) — Dulhan Bangles Theme</h2>
+
+      <label>Shop name</label>
+      <input id="shopName" type="text" value="Dulhan Bangles">
+
+      <label>Shop address</label>
+      <textarea id="shopAddress" rows="3">2, Shiv Thakur Ln, Radha Kunj, Bara Bazar, Jorasanko, Kolkata, West Bengal 700007</textarea>
+
+      <label>Shop phone</label>
+      <input id="shopPhone" type="text" value="9874562145">
+
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <div style="flex:1">
+          <label>Invoice #</label>
+          <input id="invoiceNo" type="text" value="">
+        </div>
+        <div style="width:150px">
+          <label>Date</label>
+          <input id="invoiceDate" type="text" value="">
+        </div>
+      </div>
+
+      <label style="margin-top:8px">Buyer name</label>
+      <input id="buyerName" type="text" value="sk">
+
+      <label>Buyer phone (WhatsApp)</label>
+      <input id="buyerPhone" type="text" value="7003226721">
+
+      <div class="items-area">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="font-weight:700;color:var(--muted)">Items</div>
+          <div class="small">Add & edit</div>
+        </div>
+
+        <div id="itemsList" style="margin-top:8px"></div>
+
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button id="addItem" class="btn">+ Add product</button>
+          <button id="clearItems" class="btn ghost">Clear items</button>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
+          <label style="flex:1">Tax (%)</label>
+          <div style="width:100px"><input id="tax" type="number" value="0" min="0" step="0.01"></div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+          <label style="flex:1">Discount (flat)</label>
+          <div style="width:100px"><input id="discount" type="number" value="0" min="0" step="0.01"></div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button id="generate" class="btn">Generate preview</button>
+          <button id="downloadPdfBtn" class="btn">Download A5 PDF</button>
+          <button id="sendWhatsApp" class="btn ghost">Send to WhatsApp</button>
+        </div>
+
+        <div class="small" style="margin-top:8px;color:#444">
+          Note: Mobile that supports file share will let you send PDF directly to WhatsApp. Desktop will download the PDF and open the chat with a message — attach the saved PDF manually.
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Invoice preview -->
+    <div class="panel">
+      <div class="controls">
+        <button id="downloadPdfTop" class="btn">Download A5 PDF</button>
+        <button id="openShare" class="btn ghost">Share / Send</button>
+      </div>
+
+      <div id="invoicePreview" class="invoice-preview" style="max-width:720px;margin:0 auto">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px" class="inv-header">
+          <div style="display:flex;gap:12px;align-items:center">
+            <!-- Replace the src below with:
+                 - your PNG base64: src="data:image/png;base64,...."  (recommended single-file)
+                 - OR a local filename: src="logo.png" (logo.png must be in same folder) -->
+            <img id="logoImg" class="logo-img" src="db.png" alt="Dulhan Bangles logo">
+            <div>
+              <div class="shop" id="pvShop">Dulhan Bangles</div>
+              <div class="shop-addr" id="pvAddr">2, Shiv Thakur Ln, Radha Kunj,...</div>
+              <div class="shop-addr" id="pvPhone">9874562145</div>
+            </div>
+          </div>
+          <div class="inv-meta">
+            <div style="font-weight:800;color:var(--dark)">Invoice</div>
+            <div style="margin-top:8px">Invoice #: <strong id="pvNo">—</strong></div>
+            <div style="margin-top:6px">Date: <strong id="pvDate">—</strong></div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-top:12px;gap:12px">
+          <div>
+            <div style="font-size:13px;color:#666">Bill to</div>
+            <div style="font-weight:800;margin-top:6px" id="pvBuyer">sk</div>
+            <div style="margin-top:6px;color:#666" id="pvBuyerPhone">7003226721</div>
+          </div>
+          <div style="text-align:right;color:#666;font-size:13px">
+            <div>Due: <strong>On Receipt</strong></div>
+            <div style="margin-top:10px">Payment: Cash / UPI / Card</div>
+          </div>
+        </div>
+
+        <table aria-label="items table">
+          <thead>
+            <tr><th style="width:52%">Item</th><th style="width:12%">Qty</th><th style="width:18%">Rate</th><th style="width:18%" class="text-right">Amount</th></tr>
+          </thead>
+          <tbody id="pvItems"></tbody>
+        </table>
+
+        <div class="totals">
+          <div class="box">
+            <div class="row"><div>Subtotal</div><div id="pvSub">₹0.00</div></div>
+            <div class="row"><div>Tax (<span id="pvTaxPct">0</span>%)</div><div id="pvTax">₹0.00</div></div>
+            <div class="row"><div>Discount</div><div id="pvDisc">- ₹0.00</div></div>
+            <div class="row grand"><div>Grand Total</div><div id="pvTotal">₹0.00</div></div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+          <div style="font-size:13px;color:#666">Thank you for shopping at Dulhan Bangles.<br>Contact: 2, Shiv Thakur Ln, Radha Kunj, Bara Bazar, Jorasanko, Kolkata, West Bengal 700007 | 9874562145</div>
+          <div style="text-align:center;color:#444" class="small">
+            <div style="height:60px;border-bottom:1px solid #eee;width:180px;margin-bottom:8px"></div>
+            Signature
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- html2pdf (includes html2canvas & jsPDF) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+
+  <script>
+  // --- helpers ---
+  function fmtINR(n){ return '₹' + Number(n||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+  function escapeHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  // --- elements ---
+  const E = {
+    shopName: document.getElementById('shopName'),
+    shopAddress: document.getElementById('shopAddress'),
+    shopPhone: document.getElementById('shopPhone'),
+    invoiceNo: document.getElementById('invoiceNo'),
+    invoiceDate: document.getElementById('invoiceDate'),
+    buyerName: document.getElementById('buyerName'),
+    buyerPhone: document.getElementById('buyerPhone'),
+    itemsList: document.getElementById('itemsList'),
+    addItemBtn: document.getElementById('addItem'),
+    clearItemsBtn: document.getElementById('clearItems'),
+    tax: document.getElementById('tax'),
+    discount: document.getElementById('discount'),
+    generateBtn: document.getElementById('generate'),
+    downloadPdfBtn: document.getElementById('downloadPdfBtn'),
+    sendWhatsAppBtn: document.getElementById('sendWhatsApp'),
+    downloadPdfTop: document.getElementById('downloadPdfTop'),
+    openShare: document.getElementById('openShare'),
+    // preview
+    pvShop: document.getElementById('pvShop'),
+    pvAddr: document.getElementById('pvAddr'),
+    pvPhone: document.getElementById('pvPhone'),
+    pvNo: document.getElementById('pvNo'),
+    pvDate: document.getElementById('pvDate'),
+    pvBuyer: document.getElementById('pvBuyer'),
+    pvBuyerPhone: document.getElementById('pvBuyerPhone'),
+    pvItems: document.getElementById('pvItems'),
+    pvSub: document.getElementById('pvSub'),
+    pvTaxPct: document.getElementById('pvTaxPct'),
+    pvTax: document.getElementById('pvTax'),
+    pvDisc: document.getElementById('pvDisc'),
+    pvTotal: document.getElementById('pvTotal'),
+    invoicePreview: document.getElementById('invoicePreview')
+  };
+
+  // --- data ---
+  let itemsData = [
+    {name:'Red glass bangle', qty:2, rate:150},
+    {name:'Gold plated set', qty:1, rate:1200}
+  ];
+
+  // set defaults
+  E.invoiceNo.value = 'INV' + new Date().toISOString().slice(2,10).replace(/-/g,'') + '-' + Math.floor(Math.random()*900+100);
+  E.invoiceDate.value = (new Date()).toLocaleDateString('en-GB');
+  E.tax.value = 0; E.discount.value = 0;
+
+  // render item inputs on the left panel
+  function renderItemInputs(){
+    E.itemsList.innerHTML = '';
+    itemsData.forEach((it, idx) => {
+      const row = document.createElement('div');
+      row.style.display = 'flex'; row.style.gap='8px'; row.style.marginTop='8px';
+      row.innerHTML = `
+        <input class="itm-name" placeholder="Product name" style="flex:1" value="${escapeHtml(it.name)}">
+        <input class="itm-qty" type="number" style="width:72px" min="0" value="${it.qty}">
+        <input class="itm-rate" type="number" style="width:110px" step="0.01" min="0" value="${it.rate}">
+        <button class="btn ghost remove" style="padding:6px 8px">Remove</button>
+      `;
+      E.itemsList.appendChild(row);
+      row.querySelector('.itm-name').addEventListener('input', e => { itemsData[idx].name = e.target.value; updatePreview(); });
+      row.querySelector('.itm-qty').addEventListener('input', e => { itemsData[idx].qty = Number(e.target.value) || 0; updatePreview(); });
+      row.querySelector('.itm-rate').addEventListener('input', e => { itemsData[idx].rate = Number(e.target.value) || 0; updatePreview(); });
+      row.querySelector('.remove').addEventListener('click', () => { itemsData.splice(idx,1); renderItemInputs(); updatePreview(); });
+    });
+    if(itemsData.length === 0){
+      const hint = document.createElement('div'); hint.className='small'; hint.style.marginTop='8px'; hint.textContent='No items yet';
+      E.itemsList.appendChild(hint);
+    }
+  }
+
+  // add/clear
+  E.addItemBtn.addEventListener('click', () => { itemsData.push({name:'New product', qty:1, rate:0}); renderItemInputs(); updatePreview(); });
+  E.clearItemsBtn.addEventListener('click', () => { if(!confirm('Clear items?')) return; itemsData=[]; renderItemInputs(); updatePreview(); });
+
+  // update preview
+  function updatePreview(){
+    E.pvShop.textContent = E.shopName.value || 'Dulhan Bangles';
+    E.pvAddr.textContent = E.shopAddress.value || '';
+    E.pvPhone.textContent = E.shopPhone.value || '';
+    E.pvNo.textContent = E.invoiceNo.value || '—';
+    E.pvDate.textContent = E.invoiceDate.value || '—';
+    E.pvBuyer.textContent = E.buyerName.value || 'Customer';
+    E.pvBuyerPhone.textContent = E.buyerPhone.value || '';
+
+    E.pvItems.innerHTML = '';
+    let subtotal = 0;
+    itemsData.forEach((it, idx) => {
+      const amount = (Number(it.qty)||0) * (Number(it.rate)||0);
+      subtotal += amount;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${String(idx+1).padStart(2,'0')} — ${escapeHtml(it.name)}</td>
+                      <td style="width:12%">${it.qty}</td>
+                      <td style="width:18%">${fmtINR(it.rate)}</td>
+                      <td class="text-right" style="width:18%">${fmtINR(amount)}</td>`;
+      E.pvItems.appendChild(tr);
+    });
+    const taxPct = Number(E.tax.value)||0;
+    const discount = Number(E.discount.value)||0;
+    const taxAmt = subtotal * (taxPct/100);
+    const total = subtotal + taxAmt - discount;
+    E.pvSub.textContent = fmtINR(subtotal);
+    E.pvTaxPct.textContent = String(taxPct);
+    E.pvTax.textContent = fmtINR(taxAmt);
+    E.pvDisc.textContent = '- ' + fmtINR(discount);
+    E.pvTotal.textContent = fmtINR(total >= 0 ? total : 0);
+  }
+
+  // wire inputs
+  ['shopName','shopAddress','shopPhone','invoiceNo','invoiceDate','buyerName','buyerPhone','tax','discount'].forEach(id => {
+    document.getElementById(id).addEventListener('input', updatePreview);
+  });
+  E.generateBtn.addEventListener('click', ()=>{ renderItemInputs(); updatePreview(); alert('Preview updated'); });
+
+  // init
+  renderItemInputs();
+  updatePreview();
+
+  // --- A5 PDF generation ---
+  async function generateA5PdfBlob(){
+    updatePreview();
+    const element = document.getElementById('invoicePreview');
+    const opt = {
+      margin: [8,8,8,8],
+      filename: (E.invoiceNo.value || 'invoice') + '.pdf',
+      image: { type:'jpeg', quality:0.98 },
+      html2canvas: { scale:2, useCORS:true, letterRendering:true },
+      jsPDF: { unit:'mm', format:'a5', orientation:'portrait' }
+    };
+    return new Promise((resolve,reject) => {
+      html2pdf().set(opt).from(element).toPdf().get('pdf').then((pdf)=>{
+        try{ const blob = pdf.output('blob'); resolve({blob, filename:opt.filename}); } catch(err){ reject(err); }
+      }).catch(reject);
+    });
+  }
+
+  async function downloadPdfAndPrompt(blob, filename){
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),60*1000);
+  }
+
+  document.getElementById('downloadPdfTop').addEventListener('click', async ()=> {
+    try{ const {blob, filename} = await generateA5PdfBlob(); await downloadPdfAndPrompt(blob, filename); alert('PDF generated and download started (A5).'); }
+    catch(e){ console.error(e); alert('Failed to generate PDF: '+(e.message||e)); }
+  });
+  document.getElementById('downloadPdfBtn').addEventListener('click', async ()=> {
+    try{ const {blob, filename} = await generateA5PdfBlob(); await downloadPdfAndPrompt(blob, filename); alert('PDF generated and download started (A5).'); }
+    catch(e){ console.error(e); alert('Failed to generate PDF: '+(e.message||e)); }
+  });
+
+  // --- WhatsApp sharing (mobile share API or desktop fallback) ---
+  async function sharePdfToWhatsApp(){
+    try{
+      const {blob, filename} = await generateA5PdfBlob();
+      const file = new File([blob], filename, {type:'application/pdf'});
+      if(navigator.canShare && navigator.canShare({files:[file]})){
+        try{ await navigator.share({files:[file], title: filename, text: `Invoice ${E.invoiceNo.value} from ${E.shopName.value}`}); return; }
+        catch(err){ console.warn('Share API failed/cancelled:', err); }
+      }
+      // desktop fallback: download, open chat with prefilled message
+      await downloadPdfAndPrompt(blob, filename);
+      const buyerPhoneRaw = E.buyerPhone.value.trim();
+      let digits = buyerPhoneRaw.replace(/[^0-9+]/g,'');
+      if(digits.startsWith('+')) digits = digits.slice(1);
+      if(digits.startsWith('0')) digits = digits.replace(/^0+/, '');
+      if(digits.length === 10) digits = '91'+digits;
+      const msgLines = [
+        `${E.shopName.value} — Invoice ${E.invoiceNo.value}`,
+        `Hi ${E.buyerName.value || 'Customer'}, I've generated your invoice (A5 PDF).`,
+        `Please download the PDF from your browser's downloads and attach it here.`,
+        `Invoice total: ${document.getElementById('pvTotal').textContent}`,
+        'Thank you!'
+      ];
+      const encoded = encodeURIComponent(msgLines.join('\\n'));
+      const waLink = (digits && digits.length >= 8) ? `https://wa.me/${digits}?text=${encoded}` : `https://web.whatsapp.com/send?text=${encoded}`;
+      window.open(waLink, '_blank');
+      alert('PDF downloaded. A WhatsApp chat was opened — attach the downloaded PDF manually to send it.');
+    } catch(err){
+      console.error(err); alert('Error while preparing share: ' + (err && err.message ? err.message : err));
+    }
+  }
+
+  document.getElementById('sendWhatsApp').addEventListener('click', sharePdfToWhatsApp);
+  document.getElementById('openShare').addEventListener('click', sharePdfToWhatsApp);
+
+  // keep preview live
+  setInterval(updatePreview, 800);
+  </script>
+</body>
+</html>
